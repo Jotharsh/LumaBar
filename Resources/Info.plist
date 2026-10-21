@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>CFBundleName</key><string>LumaBar</string>
+    <key>CFBundleDisplayName</key><string>LumaBar</string>
+    <key>CFBundleIdentifier</key><string>io.github.jotharsh.LumaBar</string>
+    <key>CFBundleExecutable</key><string>LumaBar</string>
+    <key>CFBundleIconFile</key><string>AppIcon</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>1.0.0</string>
+    <key>CFBundleVersion</key><string>1</string>
+    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSApplicationCategoryType</key><string>public.app-category.utilities</string>
+    <key>NSHighResolutionCapable</key><true/>
+
+    <!-- Menu bar only: no Dock icon, no app menu. -->
+    <key>LSUIElement</key><true/>
+
+    <!-- Talking to bulbs on the LAN (macOS asks the first time). -->
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>LumaBar finds and controls your WiZ smart bulbs on your local network.</string>
+
+    <!-- Hue bridges announce themselves with Bonjour; their local API is plain HTTP on the LAN. -->
+    <key>NSBonjourServices</key>
+    <array><string>_hue._tcp</string></array>
+    <key>NSAppTransportSecurity</key>
+    <dict><key>NSAllowsLocalNetworking</key><true/></dict>
+
+    <!-- v2: calendar scenes -->
+    <key>NSCalendarsUsageDescription</key>
+    <string>LumaBar changes your light's color while you're in a meeting, using your calendar events.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>LumaBar changes your light's color while you're in a meeting, using your calendar events.</string>
+
+    <!-- v2: sunset automation -->
+    <key>NSLocationUsageDescription</key>
+    <string>LumaBar uses your approximate location to work out sunset time for the evening dimming schedule.</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>LumaBar uses your approximate location to work out sunset time for the evening dimming schedule.</string>
+</dict>
+</plist>
