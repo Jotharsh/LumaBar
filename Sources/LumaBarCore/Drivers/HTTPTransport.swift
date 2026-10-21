@@ -24,7 +24,7 @@ public struct URLSessionTransport: HTTPTransport {
         } catch let error as DriverError {
             throw error
         } catch {
-            throw DriverError.unreachable(error.localizedDescription)
+            throw NetworkErrors.classify(error)
         }
     }
 }

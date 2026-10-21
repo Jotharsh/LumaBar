@@ -180,6 +180,8 @@ public enum WizError: Error, Equatable, LocalizedError {
     case offline(String)
     case invalidResponse
     case rejected(String)
+    /// macOS is refusing the connection (usually the Local Network permission).
+    case localNetworkBlocked
 
     public var errorDescription: String? {
         switch self {
@@ -187,6 +189,7 @@ public enum WizError: Error, Equatable, LocalizedError {
         case .offline(let reason): return "Can't reach the bulb (\(reason))."
         case .invalidResponse: return "The bulb sent a reply LumaBar couldn't read."
         case .rejected(let reason): return "The bulb rejected the command: \(reason)"
+        case .localNetworkBlocked: return "macOS is blocking LumaBar from your local network."
         }
     }
 }

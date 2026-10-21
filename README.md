@@ -16,6 +16,10 @@
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
+<p align="center">
+  <img src="docs/screenshot.png" alt="The LumaBar popover: power, brightness, warmth, colour, scenes with a speed slider, and presets" width="300">
+</p>
+
 ---
 
 LumaBar lives in your menu bar and talks directly to your bulbs on your Wi-Fi: **WiZ, Tuya / Smart Life, Yeelight, LIFX, Philips Hue**, and anything **Home Assistant** controls. Click the lightbulb to switch lights on and off, change brightness, warmth and colour, pick a scene, or recall a preset. Global hotkeys work from any app.
@@ -53,7 +57,7 @@ It's a Mac stand-in for the phone apps' local controls, in one place, for people
 
 **Requirements:** macOS 13 (Ventura) or later, Apple Silicon or Intel, and your Mac on the same Wi-Fi network as the bulbs.
 
-1. Download **`LumaBar-1.0.0.dmg`** from the [latest release](https://github.com/Jotharsh/LumaBar/releases/latest).
+1. Download **`LumaBar-1.0.1.dmg`** from the [latest release](https://github.com/Jotharsh/LumaBar/releases/latest).
 2. Open the DMG and drag **LumaBar** onto the **Applications** shortcut.
 3. Eject the DMG, then open **LumaBar** from Applications.
 4. Look for the **lightbulb icon at the top right of your menu bar** and click it. (There's no Dock icon and no window.)
@@ -88,6 +92,7 @@ Quit LumaBar from its menu, then drag it from Applications to the Trash. To remo
 
 If LumaBar shows **"Can't reach …"** or **"No bulbs found"**, it names the brand and lists what to check. The common causes:
 
+- **macOS is blocking LumaBar from your local network.** This is the most common one on a fresh install, and after updating the app. LumaBar shows a red box saying so, with a button to **System Settings ▸ Privacy & Security ▸ Local Network**. Switch LumaBar on there (if it's already on, switch it off and on again), then click **Try Again**. In the card, **More things to check ▸ Technical detail** shows the exact reason macOS gave.
 - **The bulb's own app setting is off:** WiZ needs *Allow local communication*; Yeelight needs *LAN Control*.
 - **Different networks:** your Mac and the bulb must be on the same Wi-Fi (not a guest network, and with any VPN off). Routers with "client isolation" block local traffic.
 - **Local Network permission:** System Settings ▸ Privacy & Security ▸ **Local Network** ▸ make sure LumaBar is on.
@@ -112,7 +117,6 @@ If it still doesn't work, [open an issue](https://github.com/Jotharsh/LumaBar/is
 - LIFX's list of white-only models is partial; unknown models are treated as colour bulbs.
 - Home Assistant needs version 2022.11 or newer.
 - The permission-gated automations (calendar, sunset, screen sync) have not been exercised on real data.
-- No screenshots yet.
 
 ## Build from source
 
@@ -122,7 +126,7 @@ You need macOS 13+ and Xcode (or its command line tools) with Swift 5.9+.
 git clone https://github.com/Jotharsh/LumaBar.git
 cd LumaBar
 swift build                  # debug build
-swift test                   # ~225 tests, all against simulated devices: no bulbs needed
+swift test                   # ~230 tests, all against simulated devices: no bulbs needed
 ./scripts/build.sh           # dist/LumaBar.app (release, universal, ad-hoc signed)
 ./scripts/make_dmg.sh        # dist/LumaBar.dmg
 open dist/LumaBar.app

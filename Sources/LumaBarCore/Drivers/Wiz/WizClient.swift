@@ -76,24 +76,32 @@ public final class WizClient: @unchecked Sendable {
                 switch state {
                 case .ready:
                     connection.send(content: payload, completion: .contentProcessed { error in
-                        if let error { once.fail(WizError.offline(error.localizedDescription)) }
+                        if let error { once.fail(Self.classify(error)) }
                     })
                     connection.receiveMessage { data, _, _, error in
                         if let data, !data.isEmpty {
                             once.succeed(data)
                         } else {
-                            once.fail(WizError.offline(error?.localizedDescription ?? "empty reply"))
+                            once.fail(error.map(Self.classify) ?? WizError.offline("empty reply"))
                         }
                     }
+                case .waiting(let error):
+                    // macOS parks a connection it can't route (or isn't allowed to make) in "waiting".
+                    // Remember why, so a timeout can report the real reason instead of a vague one.
+                    once.noteWaiting(error)
                 case .failed(let error):
-                    once.fail(WizError.offline(error.localizedDescription))
+                    once.fail(Self.classify(error))
                 default:
                     break
                 }
             }
             connection.start(queue: queue)
-            queue.asyncAfter(deadline: .now() + timeout) { once.fail(WizError.timeout) }
+            queue.asyncAfter(deadline: .now() + timeout) { once.failTimeout() }
         }
+    }
+
+    private static func classify(_ error: Error) -> WizError {
+        NetworkErrors.isLocalNetworkBlock(error) ? .localNetworkBlocked : .offline(error.localizedDescription)
     }
 
     // MARK: - Discovery
@@ -211,8 +219,21 @@ private final class OneShot: @unchecked Sendable {
         self.connection = connection
     }
 
+    private var waitingError: Error?
+
     func succeed(_ data: Data) { finish(.success(data)) }
     func fail(_ error: Error) { finish(.failure(error)) }
+
+    func noteWaiting(_ error: Error) {
+        lock.lock(); waitingError = error; lock.unlock()
+    }
+
+    /// The timer fired: report why the connection was stuck if macOS told us, otherwise a plain timeout.
+    func failTimeout() {
+        lock.lock(); let reason = waitingError; lock.unlock()
+        guard let reason else { return fail(WizError.timeout) }
+        fail(NetworkErrors.isLocalNetworkBlock(reason) ? WizError.localNetworkBlocked : WizError.offline(reason.localizedDescription))
+    }
 
     private func finish(_ result: Result<Data, Error>) {
         lock.lock()

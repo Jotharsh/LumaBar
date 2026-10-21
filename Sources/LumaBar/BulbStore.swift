@@ -35,6 +35,10 @@ final class BulbStore: ObservableObject {
     @Published private(set) var lastError: String?
     /// The last network search came back empty and there are no saved bulbs.
     @Published private(set) var discoveryFoundNothing = false
+    /// macOS itself refused the connection (almost always the Local Network permission), rather than the bulb not answering.
+    @Published private(set) var systemBlockingSuspected = false
+    /// The low-level reason the last connection failed, shown in the help card to make problems diagnosable.
+    @Published private(set) var connectionDetail: String?
 
     // MARK: Internals
 
@@ -282,6 +286,8 @@ final class BulbStore: ObservableObject {
             } else {
                 offline.remove(bulb.id)
                 lastError = nil
+                systemBlockingSuspected = false
+                connectionDetail = nil
             }
             drain(bulb) // anything that arrived while this was in flight
         }
@@ -294,6 +300,13 @@ final class BulbStore: ObservableObject {
             lastError = "\(bulb.name) rejected the command: \(reason)"
         case .authentication(let message), .notConfigured(let message), .unsupported(let message):
             lastError = "\(bulb.name): \(message)"
+        case .localNetworkBlocked(let message):
+            offline.insert(bulb.id)
+            systemBlockingSuspected = true
+            connectionDetail = message
+        case .unreachable(let message):
+            offline.insert(bulb.id)
+            connectionDetail = message
         default:
             offline.insert(bulb.id)
         }
@@ -309,6 +322,8 @@ final class BulbStore: ObservableObject {
         var states: [String: BulbState] = [:]
         var failed: Set<String> = []
         var problems: [String] = []     // answered, but refused (bad token, driver not set up)
+        var blocked = false             // macOS refused the connection
+        var detail: String?             // the low-level reason, for the help card
         let registry = self.registry
         await withTaskGroup(of: (Bulb, BulbState?, Error?).self) { group in
             for bulb in all {
@@ -326,6 +341,10 @@ final class BulbStore: ObservableObject {
                     switch error as? DriverError {
                     case .authentication(let m), .notConfigured(let m), .unsupported(let m):
                         problems.append("\(bulb.name): \(m)")      // not a connectivity problem
+                    case .localNetworkBlocked(let m):
+                        failed.insert(bulb.id); blocked = true; detail = m
+                    case .unreachable(let m):
+                        failed.insert(bulb.id); detail = m
                     default:
                         failed.insert(bulb.id)
                     }
@@ -334,6 +353,8 @@ final class BulbStore: ObservableObject {
         }
         if let problem = problems.first { lastError = problem }
         offline = failed
+        systemBlockingSuspected = blocked
+        connectionDetail = failed.isEmpty ? nil : detail
         let shown = targets.compactMap { states[$0.id] }
         if let primary = shown.first(where: { $0.isOn }) ?? shown.first {
             brightness = Double(primary.dimming)

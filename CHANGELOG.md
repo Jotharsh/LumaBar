@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.0.1
+
+- **Clearer help when macOS blocks LumaBar from the local network.** The "Can't reach" card now says so directly, with a button to the right System Settings pane, instead of showing generic bulb advice. Applies to every brand.
+- The card shows the technical reason a connection failed ("More things to check" > "Technical detail"), which makes problems much easier to report and diagnose.
+- LumaBar no longer reports a vague timeout when macOS gave a specific reason.
+- Fixed the "Video Call" preset button being cut off ("Video C...").
+- Release builds can go to a separate folder (`OUT_DIR=...`), so rebuilding doesn't replace the copy you're running.
+- More tests (232 in total).
+- Added a screenshot to the README.
+
 ## 1.0.0
 
 First public release.

@@ -60,6 +60,7 @@ public final class WizDriver: BulbDriver {
         switch wiz {
         case .rejected(let reason): return DriverError.rejected(reason)
         case .invalidResponse: return DriverError.protocolError(wiz.localizedDescription)
+        case .localNetworkBlocked: return DriverError.localNetworkBlocked(wiz.localizedDescription)
         case .timeout, .offline: return DriverError.unreachable(wiz.localizedDescription)
         }
     }

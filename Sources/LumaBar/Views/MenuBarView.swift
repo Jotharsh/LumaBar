@@ -219,6 +219,7 @@ struct MenuBarView: View {
                             .labelStyle(.titleAndIcon)
                             .font(.caption)
                             .lineLimit(1)
+                            .minimumScaleFactor(0.75)      // keeps "Video Call" from being cut off as "Video C…"
                             .frame(maxWidth: .infinity)
                     }
                     .controlSize(.regular)

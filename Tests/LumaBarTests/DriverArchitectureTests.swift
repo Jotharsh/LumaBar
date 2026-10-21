@@ -222,4 +222,57 @@ final class CapabilityAwareStoreTests: XCTestCase {
         XCTAssertEqual(a.forgotten, ["alpha:1"])
         XCTAssertTrue(s.savedBulbs.isEmpty)
     }
+
+    // MARK: macOS blocking the local network
+
+    private func blockedStore() -> (BulbStore, MockDriver, Bulb) {
+        let driver = MockDriver(id: "alpha")
+        let bulb = mockBulb("alpha", "1", caps: .fullColor, name: "Lamp")
+        return (store([driver], bulbs: [bulb]), driver, bulb)
+    }
+
+    func testMacOSBlockingIsReportedAsItsOwnCauseWithTheTechnicalDetail() async {
+        let (s, driver, bulb) = blockedStore()
+        driver.setFailure(.localNetworkBlocked("macOS is blocking LumaBar (No route to host)."))
+
+        await s.refresh()
+
+        XCTAssertTrue(s.systemBlockingSuspected)
+        XCTAssertTrue(s.showConnectionHelp)
+        XCTAssertTrue(s.offline.contains(bulb.id))
+        XCTAssertEqual(s.connectionDetail, "macOS is blocking LumaBar (No route to host).")
+    }
+
+    func testAnOrdinaryUnreachableBulbIsNotBlamedOnMacOS() async {
+        let (s, driver, _) = blockedStore()
+        driver.setFailure(.unreachable("The bulb didn't respond."))
+
+        await s.refresh()
+
+        XCTAssertFalse(s.systemBlockingSuspected)
+        XCTAssertTrue(s.showConnectionHelp)
+        XCTAssertEqual(s.connectionDetail, "The bulb didn't respond.")
+    }
+
+    func testBlockedCommandRaisesTheSameFlag() async {
+        let (s, driver, _) = blockedStore()
+        driver.setFailure(.localNetworkBlocked("blocked"))
+        s.setPower(true)
+        await settle()
+        XCTAssertTrue(s.systemBlockingSuspected)
+    }
+
+    func testTheWarningClearsOnceTheBulbAnswers() async {
+        let (s, driver, _) = blockedStore()
+        driver.setFailure(.localNetworkBlocked("blocked"))
+        await s.refresh()
+        XCTAssertTrue(s.systemBlockingSuspected)
+
+        driver.setFailure(nil)                 // the user switched the permission on
+        await s.refresh()
+
+        XCTAssertFalse(s.systemBlockingSuspected)
+        XCTAssertFalse(s.showConnectionHelp)
+        XCTAssertNil(s.connectionDetail)
+    }
 }

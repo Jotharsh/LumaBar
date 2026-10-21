@@ -3,6 +3,8 @@ import Foundation
 public enum DriverError: Error, Equatable, LocalizedError {
     /// The device didn't answer or the connection failed.
     case unreachable(String)
+    /// macOS refused the connection before it left the Mac. Almost always the Local Network permission.
+    case localNetworkBlocked(String)
     /// The device answered but refused the command.
     case rejected(String)
     /// Credentials are missing or wrong (token, local key, pairing).
@@ -16,7 +18,7 @@ public enum DriverError: Error, Equatable, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .unreachable(let m), .rejected(let m), .authentication(let m),
+        case .unreachable(let m), .localNetworkBlocked(let m), .rejected(let m), .authentication(let m),
              .notConfigured(let m), .unsupported(let m), .protocolError(let m):
             return m
         }

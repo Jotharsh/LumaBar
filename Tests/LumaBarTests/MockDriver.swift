@@ -15,6 +15,7 @@ final class MockDriver: BulbDriver, @unchecked Sendable {
     private var _bulbs: [Bulb]
     private var _applied: [(bulbID: String, command: LightCommand)] = []
     private var _reachable = true
+    private var _failure: DriverError?
     private var _state = BulbState(isOn: true, dimming: 50, temperature: 3000)
 
     init(id: String, brand: String? = nil, bulbs: [Bulb] = [], scenes: [LightScene] = []) {
@@ -27,6 +28,8 @@ final class MockDriver: BulbDriver, @unchecked Sendable {
     }
 
     var applied: [(bulbID: String, command: LightCommand)] { lock.lock(); defer { lock.unlock() }; return _applied }
+    /// Make every state read and command fail with this error (nil to recover).
+    func setFailure(_ error: DriverError?) { lock.lock(); _failure = error; lock.unlock() }
     func setReachable(_ value: Bool) { lock.lock(); _reachable = value; lock.unlock() }
     func setState(_ state: BulbState) { lock.lock(); _state = state; lock.unlock() }
     func setBulbs(_ bulbs: [Bulb]) { lock.lock(); _bulbs = bulbs; lock.unlock() }
@@ -43,12 +46,14 @@ final class MockDriver: BulbDriver, @unchecked Sendable {
 
     func getState(of bulb: Bulb) async throws -> BulbState {
         lock.lock(); defer { lock.unlock() }
+        if let failure = _failure { throw failure }
         guard _reachable else { throw DriverError.unreachable("offline") }
         return _state
     }
 
     func apply(_ command: LightCommand, to bulb: Bulb) async throws {
         lock.lock(); defer { lock.unlock() }
+        if let failure = _failure { throw failure }
         guard _reachable else { throw DriverError.unreachable("offline") }
         _applied.append((bulb.id, command))
     }

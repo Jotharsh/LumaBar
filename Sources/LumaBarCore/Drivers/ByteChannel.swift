@@ -56,8 +56,8 @@ public final class NWByteChannel: ByteChannel, @unchecked Sendable {
             connection.stateUpdateHandler = { state in
                 switch state {
                 case .ready: once.succeed(())
-                case .failed(let error): once.fail(DriverError.unreachable(error.localizedDescription))
-                case .waiting(let error): once.fail(DriverError.unreachable(error.localizedDescription))
+                case .failed(let error): once.fail(NetworkErrors.classify(error))
+                case .waiting(let error): once.fail(NetworkErrors.classify(error))
                 case .cancelled: once.fail(DriverError.unreachable("Connection cancelled."))
                 default: break
                 }
@@ -72,7 +72,7 @@ public final class NWByteChannel: ByteChannel, @unchecked Sendable {
     public func send(_ data: Data) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             connection.send(content: data, completion: .contentProcessed { error in
-                if let error { continuation.resume(throwing: DriverError.unreachable(error.localizedDescription)) }
+                if let error { continuation.resume(throwing: NetworkErrors.classify(error)) }
                 else { continuation.resume() }
             })
         }
@@ -83,7 +83,7 @@ public final class NWByteChannel: ByteChannel, @unchecked Sendable {
             let once = OnceContinuation(continuation)
             connection.receive(minimumIncompleteLength: 1, maximumLength: 4096) { data, _, isComplete, error in
                 if let data, !data.isEmpty { once.succeed(data) }
-                else if let error { once.fail(DriverError.unreachable(error.localizedDescription)) }
+                else if let error { once.fail(NetworkErrors.classify(error)) }
                 else if isComplete { once.fail(DriverError.unreachable("The device closed the connection.")) }
             }
             queue.asyncAfter(deadline: .now() + timeout) { once.fail(DriverError.unreachable("The device didn't answer in time.")) }

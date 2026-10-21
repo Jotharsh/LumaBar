@@ -9,7 +9,7 @@ only WiZ has been verified on hardware, so reports for the other brands (what wo
 git clone https://github.com/Jotharsh/LumaBar.git
 cd LumaBar
 swift build        # debug build
-swift test         # ~225 tests, all against simulated devices: no bulbs needed
+swift test         # ~230 tests, all against simulated devices: no bulbs needed
 ./scripts/build.sh # builds dist/LumaBar.app
 ```
 

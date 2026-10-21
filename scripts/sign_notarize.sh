@@ -27,8 +27,9 @@ else
 fi
 
 APP_NAME="LumaBar"
-APP="dist/$APP_NAME.app"
-DMG="dist/$APP_NAME.dmg"
+OUT_DIR="${OUT_DIR:-dist}"
+APP="$OUT_DIR/$APP_NAME.app"
+DMG="$OUT_DIR/$APP_NAME.dmg"
 ENTITLEMENTS="Resources/LumaBar.entitlements"
 
 [ -d "$APP" ] || ./scripts/build.sh
