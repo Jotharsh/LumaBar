@@ -57,7 +57,7 @@ It's a Mac stand-in for the phone apps' local controls, in one place, for people
 
 **Requirements:** macOS 13 (Ventura) or later, Apple Silicon or Intel, and your Mac on the same Wi-Fi network as the bulbs.
 
-1. Download **`LumaBar-1.0.1.dmg`** from the [latest release](https://github.com/Jotharsh/LumaBar/releases/latest).
+1. Download **`LumaBar-1.0.2.dmg`** from the [latest release](https://github.com/Jotharsh/LumaBar/releases/latest).
 2. Open the DMG and drag **LumaBar** onto the **Applications** shortcut.
 3. Eject the DMG, then open **LumaBar** from Applications.
 4. Look for the **lightbulb icon at the top right of your menu bar** and click it. (There's no Dock icon and no window.)

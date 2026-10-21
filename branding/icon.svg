@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22B7AB"/><stop offset="1" stop-color="#2A3690"/></linearGradient>
+    <linearGradient id="cone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFF3C4" stop-opacity=".95"/><stop offset=".6" stop-color="#FFE9A0" stop-opacity=".35"/><stop offset="1" stop-color="#FFE9A0" stop-opacity="0"/></linearGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFDD7A"/><stop offset="1" stop-color="#FF9132"/></linearGradient>
+    <radialGradient id="floor" cx="512" cy="905" r="330" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 905) scale(1 .22) translate(-512 -905)"><stop offset="0" stop-color="#FFE9A0" stop-opacity=".55"/><stop offset="1" stop-color="#FFE9A0" stop-opacity="0"/></radialGradient>
+    <clipPath id="sq"><rect x="100" y="100" width="824" height="824" rx="190"/></clipPath>
+  </defs>
+  <rect x="100" y="100" width="824" height="824" rx="190" fill="url(#bg)"/>
+  <g clip-path="url(#sq)">
+    <!-- menu bar -->
+    <rect x="100" y="100" width="824" height="100" fill="#0A1030" fill-opacity=".40"/>
+    <circle cx="196" cy="150" r="16" fill="#fff" fill-opacity=".9"/>
+    <rect x="236" y="140" width="72" height="20" rx="10" fill="#fff" fill-opacity=".6"/>
+    <rect x="324" y="140" width="56" height="20" rx="10" fill="#fff" fill-opacity=".6"/>
+    <circle cx="716" cy="150" r="14" fill="#fff" fill-opacity=".6"/>
+    <rect x="746" y="140" width="40" height="20" rx="10" fill="#fff" fill-opacity=".6"/>
+    <rect x="800" y="140" width="34" height="20" rx="10" fill="#fff" fill-opacity=".6"/>
+    <!-- LumaBar's own menu item, lit -->
+    <rect x="456" y="124" width="112" height="52" rx="26" fill="#fff" fill-opacity=".26"/>
+    <!-- light -->
+    <path d="M330 574L694 574L880 924L144 924Z" fill="url(#cone)"/>
+    <ellipse cx="512" cy="905" rx="330" ry="72" fill="url(#floor)"/>
+  </g>
+  <rect x="498" y="170" width="28" height="206" rx="6" fill="#fff" fill-opacity=".95"/>
+  <path d="M310 566A202 202 0 0 1 714 566Z" fill="url(#shade)"/>
+  <path d="M338 540A176 176 0 0 1 470 394" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="22" stroke-linecap="round"/>
+  <ellipse cx="512" cy="566" rx="202" ry="28" fill="#FFF7D6"/>
+</svg>

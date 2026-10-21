@@ -31,7 +31,11 @@ struct LumaBarApp: App {
         MenuBarExtra {
             MenuBarView().environmentObject(store)
         } label: {
-            Image(systemName: store.isOn ? "lightbulb.fill" : "lightbulb")
+            if let glyph = MenuBarIcon.image(isOn: store.isOn) {
+                Image(nsImage: glyph)
+            } else {
+                Image(systemName: store.isOn ? "lightbulb.fill" : "lightbulb")
+            }
         }
         .menuBarExtraStyle(.window)
 

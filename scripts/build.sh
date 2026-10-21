@@ -3,7 +3,7 @@
 #
 # Optional environment:
 #   OUT_DIR=dist         where to put the app (default dist/)
-#   VERSION=1.0.1        marketing version
+#   VERSION=1.0.2        marketing version
 #   BUILD_NUMBER=1       build number
 #   BUNDLE_ID=...        bundle identifier (default io.github.jotharsh.LumaBar - set your own)
 #   ARCHS="arm64"        architectures (default: arm64 x86_64, a universal binary)
@@ -11,7 +11,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 APP_NAME="LumaBar"
-VERSION="${VERSION:-1.0.1}"
+VERSION="${VERSION:-1.0.2}"
 BUILD_NUMBER="${BUILD_NUMBER:-1}"
 BUNDLE_ID="${BUNDLE_ID:-io.github.jotharsh.LumaBar}"
 ARCHS="${ARCHS:-arm64 x86_64}"
@@ -36,6 +36,11 @@ if [ -f Resources/AppIcon.icns ]; then
 else
     echo "    (no Resources/AppIcon.icns - run: swift scripts/make_icon.swift)"
 fi
+
+# Menu bar glyphs (see scripts/make_icon.swift).
+for glyph in Resources/MenuBarOn.png Resources/MenuBarOff.png; do
+    [ -f "$glyph" ] && cp "$glyph" "$APP/Contents/Resources/"
+done
 
 # SwiftPM puts each dependency's resources (e.g. KeyboardShortcuts' strings) in a *.bundle next to
 # the binary. The generated lookup code checks Contents/Resources inside an app, so copy them there.
